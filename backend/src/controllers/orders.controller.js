@@ -199,12 +199,15 @@ export const getOrders = async (req, res) => {
         const { status, limit = 50, offset = 0 } = req.query;
         let query = `
             SELECT o.*,
-                   json_agg(json_build_object(
-                       'product_name', oi.product_name,
-                       'quantity',     oi.quantity,
-                       'unit_price',   oi.unit_price,
-                       'subtotal',     oi.subtotal
-                   )) as items
+                   COALESCE(
+                       json_agg(json_build_object(
+                           'product_name', oi.product_name,
+                           'quantity',     oi.quantity,
+                           'unit_price',   oi.unit_price,
+                           'subtotal',     oi.subtotal
+                       )) FILTER (WHERE oi.order_id IS NOT NULL),
+                       '[]'
+                   ) as items
             FROM orders o
             LEFT JOIN order_items oi ON oi.order_id = o.id
         `;

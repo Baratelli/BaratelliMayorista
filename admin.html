@@ -623,11 +623,21 @@ let authToken = null;
     // ── PEDIDOS ──
     let allOrders = [];
     async function loadOrders() {
+        const body = document.getElementById('ordersBody');
+        body.innerHTML = `<div class="empty-state"><div style="margin:0 auto 12px;width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin 0.75s linear infinite"></div><p>Cargando pedidos...</p></div>`;
         try {
             const res = await fetch(`${API_URL}/orders?limit=100`, { headers: authHeaders() });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || `Error ${res.status}`);
+            }
             allOrders = await res.json();
+            if (!Array.isArray(allOrders)) throw new Error('Respuesta inesperada del servidor');
             renderOrders();
-        } catch { allOrders = []; }
+        } catch(e) {
+            allOrders = [];
+            body.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Error al cargar pedidos: ${e.message}</p><p style="font-size:0.8rem;margin-top:8px;color:var(--text-3)">Verificá que el servidor esté activo y la URL de ngrok sea correcta.</p></div>`;
+        }
     }
 
     function renderOrders() {
@@ -738,9 +748,14 @@ let authToken = null;
     async function loadCustomers() {
         try {
             const res = await fetch(`${API_URL}/customers`, { headers: authHeaders() });
+            if (!res.ok) throw new Error(`Error ${res.status}`);
             allCustomers = await res.json();
+            if (!Array.isArray(allCustomers)) throw new Error('Respuesta inesperada');
             renderCustomers();
-        } catch { allCustomers = []; }
+        } catch(e) {
+            allCustomers = [];
+            document.getElementById('customersBody').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Error: ${e.message}</p></div>`;
+        }
     }
 
     function renderCustomers() {
