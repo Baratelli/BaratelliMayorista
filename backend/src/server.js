@@ -10,10 +10,17 @@ const PORT = process.env.PORT || 3001;
 
 // ── Middlewares ──
 app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
+    origin: '*',
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-    allowedHeaders: ['Content-Type','Authorization'],
+    allowedHeaders: ['Content-Type','Authorization','ngrok-skip-browser-warning'],
 }));
+
+// Header que le dice a ngrok que no muestre la pantalla de advertencia
+app.use((_req, res, next) => {
+    res.setHeader('ngrok-skip-browser-warning', 'true');
+    next();
+});
+
 app.use(express.json());
 
 // ── Logging básico ──

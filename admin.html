@@ -363,7 +363,7 @@ let authToken = null;
         try {
             const res = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: publicHeaders(),
                 body: JSON.stringify({ password: pass }),
             });
             const data = await res.json();
@@ -371,8 +371,15 @@ let authToken = null;
             authToken = data.token;
             sessionStorage.setItem('adminToken', authToken);
             showApp();
-        } catch {
-            document.getElementById('loginErr').style.display = 'block';
+        } catch (err) {
+            const errEl = document.getElementById('loginErr');
+            // Distinguir error de red vs contraseña incorrecta
+            if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
+                errEl.textContent = '⚠️ No se puede conectar al servidor. Verificá que ngrok esté activo y que la URL en API_URL sea la correcta.';
+            } else {
+                errEl.textContent = 'Contraseña incorrecta';
+            }
+            errEl.style.display = 'block';
             document.getElementById('loginPass').value = '';
         }
     }
@@ -395,7 +402,19 @@ let authToken = null;
     if (savedToken) { authToken = savedToken; showApp(); }
 
     function authHeaders() {
-        return { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` };
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`,
+            'ngrok-skip-browser-warning': 'true',
+        };
+    }
+
+    // Headers para requests públicas (sin auth)
+    function publicHeaders() {
+        return {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+        };
     }
 
     // ── Tabs ──
