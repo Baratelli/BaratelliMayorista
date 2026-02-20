@@ -365,6 +365,7 @@
             top: 0; right: -100%;
             width: 100%; max-width: 460px;
             height: 100vh;
+            height: 100dvh; /* en móvil se achica cuando aparece el teclado */
             background: var(--surface);
             border-left: 1px solid var(--border);
             z-index: 400;
@@ -425,46 +426,39 @@
         .cart-remove:hover { color: var(--red); }
         .cart-empty { text-align: center; padding: 60px 20px; color: var(--text-3); }
         .cart-empty .icon { font-size: 3rem; margin-bottom: 12px; }
-        /* Footer solo contiene el botón WA — siempre visible */
-        .cart-footer { padding: 12px 24px 20px; border-top: 1.5px solid var(--border); background: var(--surface); }
+        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
         .summary-row { display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text-2); margin-bottom: 6px; }
         .summary-row.savings { color: var(--green); font-weight: 600; }
         .summary-row.total { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-top: 10px; padding-top: 10px; border-top: 1.5px solid var(--border); }
-        /* Resumen + campos van dentro del scroll */
-        .cart-summary-scroll { padding: 16px 24px 0; }
-        .customer-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; padding-bottom: 8px; }
+        .customer-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
         .cart-input {
             padding: 11px 14px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             font-family: inherit;
-            font-size: 16px; /* 16px evita el zoom automático en iOS/Android */
+            font-size: 16px; /* evita zoom automático en iOS */
+            font-size: max(16px, 0.9rem);
             color: var(--text);
             transition: border-color 0.2s;
-            width: 100%;
         }
         .cart-input:focus { outline: none; border-color: var(--brand); }
         .cart-input::placeholder { color: var(--text-3); }
-        /* Botón WA: fijo en la pantalla, Z-index alto, NUNCA lo tapa el teclado */
         .wa-btn {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            z-index: 600;
+            width: 100%;
+            margin-top: 12px;
             background: #25D366;
             color: #fff;
             border: none;
-            padding: 18px 16px;
+            padding: 14px;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
-            display: none; /* se muestra solo cuando el carrito tiene items */
-            align-items: center; justify-content: center; gap: 10px;
-            box-shadow: 0 -4px 24px rgba(0,0,0,0.18);
+            display: flex; align-items: center; justify-content: center; gap: 9px;
             transition: background 0.15s;
         }
-        .wa-btn.visible { display: flex; }
-        .wa-btn:active { background: #128C7E; }
+        .wa-btn:hover { background: #128C7E; }
 
         /* ── TICKER ── */
         .ticker-bar {
@@ -644,30 +638,21 @@
     <div class="cart-items" id="cartItems">
         <div class="cart-empty"><div class="icon">🛒</div><p>El carrito está vacío</p></div>
     </div>
-    <!-- Resumen y campos dentro del scroll para que el botón quede siempre visible -->
-    <div id="cartSummaryScroll" style="display:none">
-        <div class="cart-summary-scroll">
-            <div class="summary-row"><span>Subtotal sin descuento</span><span id="subtotal"></span></div>
-            <div class="summary-row savings" id="savingsRow" style="display:none"><span>💰 Ahorro mayorista</span><span id="savings"></span></div>
-            <div class="summary-row total"><span>Total</span><span id="totalPrice"></span></div>
-            <div class="customer-fields">
-                <input class="cart-input" id="custName" placeholder="Nombre y apellido" type="text">
-                <input class="cart-input" id="custPhone" placeholder="WhatsApp (opcional, para historial)" type="tel">
-                <input class="cart-input" id="custAddress" placeholder="Dirección o zona de entrega" type="text">
-            </div>
-        </div>
-    </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
-        <!-- espacio visual para que el contenido no quede tapado por el botón fijo -->
-        <div style="height: 8px"></div>
+        <div class="summary-row"><span>Subtotal sin descuento</span><span id="subtotal"></span></div>
+        <div class="summary-row savings" id="savingsRow" style="display:none"><span>💰 Ahorro mayorista</span><span id="savings"></span></div>
+        <div class="summary-row total"><span>Total</span><span id="totalPrice"></span></div>
+        <div class="customer-fields">
+            <input class="cart-input" id="custName" placeholder="Nombre y apellido" type="text">
+            <input class="cart-input" id="custPhone" placeholder="WhatsApp (opcional, para historial)" type="tel">
+            <input class="cart-input" id="custAddress" placeholder="Dirección o zona de entrega" type="text">
+        </div>
+        <button class="wa-btn" onclick="checkout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Enviar pedido por WhatsApp
+        </button>
     </div>
 </div>
-
-<!-- BOTÓN WA FIJO — fuera del panel, anclado al viewport, el teclado NUNCA lo tapa -->
-<button class="wa-btn" id="waBtnFixed" onclick="checkout()">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Enviar pedido por WhatsApp
-</button>
 
 <script>
     // ══════════════════════════════
@@ -691,9 +676,7 @@
     // ── Carga de productos desde la API ──
     async function loadProducts() {
         try {
-            const res = await fetch(`${API_URL}/products`, {
-                headers: { 'ngrok-skip-browser-warning': 'true' }
-            });
+            const res = await fetch(`${API_URL}/products`);
             if (!res.ok) throw new Error();
             products = await res.json();
         } catch {
@@ -887,16 +870,11 @@
     }
 
     function renderCart() {
-        const container    = document.getElementById('cartItems');
-        const footer       = document.getElementById('cartFooter');
-        const summaryBlock = document.getElementById('cartSummaryScroll');
-
+        const container = document.getElementById('cartItems');
+        const footer    = document.getElementById('cartFooter');
         if (!cart.length) {
             container.innerHTML = `<div class="cart-empty"><div class="icon">🛒</div><p>El carrito está vacío</p></div>`;
-            footer.style.display = 'none';
-            summaryBlock.style.display = 'none';
-            document.getElementById('waBtnFixed').classList.remove('visible');
-            return;
+            footer.style.display='none'; return;
         }
         let subtotal=0, total=0;
         container.innerHTML = cart.map(item => {
@@ -928,24 +906,13 @@
         const sav = subtotal-total;
         document.getElementById('savingsRow').style.display = sav>0?'flex':'none';
         document.getElementById('savings').textContent = `-$${sav.toLocaleString('es-AR')}`;
-        summaryBlock.style.display = 'block';
-        footer.style.display = 'block';
-        document.getElementById('waBtnFixed').classList.add('visible');
-
-        // Mover el bloque de resumen+campos justo después de los items en el scroll
-        const cartPanel = document.getElementById('cartPanel');
-        cartPanel.insertBefore(summaryBlock, footer);
+        footer.style.display='block';
     }
 
     function toggleCart() {
         const open = document.getElementById('cartPanel').classList.toggle('open');
         document.getElementById('overlay').classList.toggle('open', open);
-        if (open) {
-            renderCart();
-        } else {
-            // Ocultar el botón fijo cuando se cierra el carrito
-            document.getElementById('waBtnFixed').classList.remove('visible');
-        }
+        if (open) renderCart();
     }
 
     // ── Checkout: registra en BD y abre WhatsApp ──
@@ -955,7 +922,7 @@
         const address = document.getElementById('custAddress').value.trim();
         if (!name || !address) { alert('Completá tu nombre y dirección antes de enviar el pedido.'); return; }
 
-        const btn = document.getElementById('waBtnFixed');
+        const btn = document.querySelector('.wa-btn');
         btn.disabled = true;
         btn.textContent = 'Registrando pedido...';
 
@@ -969,7 +936,7 @@
         try {
             const res = await fetch(`${API_URL}/orders`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     customer_name:    name,
                     customer_phone:   phone || null,
@@ -1003,22 +970,12 @@
         if (orderId) msg += `\n\n_Al confirmar este pedido el stock se actualiza automáticamente._`;
 
         btn.disabled = false;
-        btn.innerHTML = `<svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Enviar pedido por WhatsApp`;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Enviar pedido por WhatsApp`;
 
         window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     loadProducts();
-
-    // En móvil: cuando el usuario toca un campo, hacer scroll para que sea visible
-    // aunque el teclado ocupe la mitad de la pantalla
-    document.addEventListener('focusin', (e) => {
-        if (e.target.classList.contains('cart-input')) {
-            setTimeout(() => {
-                e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 350); // esperar a que el teclado termine de abrir
-        }
-    });
 
     // ── Ticker animado ──
     const TICKER_ITEMS = [
