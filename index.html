@@ -327,17 +327,14 @@
             background: var(--brand);
             border: none;
             color: #fff;
-            height: 44px;      /* misma altura que los botones qty */
+            height: 52px;
             padding: 0 8px;
             border-radius: 8px;
             font-family: inherit;
-            font-size: 0.83rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             transition: background 0.15s;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
         .add-btn:hover { background: var(--brand-d); }
         .add-btn:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
@@ -664,18 +661,13 @@
     </div>
 </div>
 
+<script src="config.js"></script>
 <script>
     // ══════════════════════════════
-    //  CONFIG — editá estos valores
+    //  CONFIG — se lee de config.js (editá ese archivo cuando cambie ngrok)
     // ══════════════════════════════
-    // URL de tu backend Node.js
-    // En desarrollo: http://localhost:3001
-    // Con ngrok: https://xxxx.ngrok-free.app
-    //https://subarctic-unresplendently-idella.ngrok-free.dev/
-    const API_URL = 'https://subarctic-unresplendently-idella.ngrok-free.dev/api';
-
-    // Tu número con código de país, sin + ni espacios
-    const WHATSAPP_NUMBER = '5491150625878';
+    const API_URL = BARATELLI_CONFIG.API_URL;
+    const WHATSAPP_NUMBER = BARATELLI_CONFIG.WHATSAPP_NUMBER;
     // ══════════════════════════════
 
     let products = [];
