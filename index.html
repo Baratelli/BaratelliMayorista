@@ -294,12 +294,12 @@
             flex-shrink: 0; /* no se achica nunca */
         }
         .qty-btn {
-            width: 40px; height: 44px;
-            min-width: 40px; /* garantiza que no desaparezca */
+            width: 36px; height: 44px;
+            min-width: 36px;
             background: transparent;
             border: none;
             color: var(--text-2);
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.12s;
@@ -308,8 +308,8 @@
         .qty-btn:hover { background: var(--brand-l); color: var(--brand); }
         .qty-btn:active { background: var(--brand); color: #fff; }
         .qty-input {
-            width: 36px;
-            min-width: 36px;
+            width: 32px;
+            min-width: 32px;
             background: transparent;
             border: none;
             color: var(--text);
@@ -321,11 +321,12 @@
         .qty-input:focus { outline: none; }
         .add-btn {
             flex: 1;
+            min-width: 0;      /* permite que flex lo achique si es necesario */
             background: var(--brand);
             border: none;
             color: #fff;
-            height: 36px;
-            padding: 0 12px;
+            height: 44px;      /* misma altura que los botones qty */
+            padding: 0 8px;
             border-radius: 8px;
             font-family: inherit;
             font-size: 0.83rem;
@@ -333,6 +334,8 @@
             cursor: pointer;
             transition: background 0.15s;
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .add-btn:hover { background: var(--brand-d); }
         .add-btn:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
