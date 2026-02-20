@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1769903129729,
+    "name": "Fideo Marolio Mostachol Rayado",
+    "price": "700.00",
+    "stock": 100,
+    "category": "Almacén",
+    "image": "fideo-marolio-m-rayado.jpg",
+    "description": "Fideos Marolio"
+  },
+  {
+    "id": 1769904923352,
+    "name": "Agua Mineral Villamanaos",
+    "price": "2000.00",
+    "stock": 10,
+    "category": "Bebidas",
+    "image": "villamanaos_6lts.webp",
+    "description": "Agua mineral villamanaos"
+  },
+  {
+    "id": 1769908893689,
+    "name": "Azúcar Tikay 1KG",
+    "price": "1000.00",
+    "stock": 50,
+    "category": "Almacén",
+    "image": "azucar-tikay.jpg",
+    "description": "Azúcar la tikay 1kg"
+  },
+  {
+    "id": 1769909629007,
+    "name": "Galletitas de agua Pindy x3",
+    "price": "900.00",
+    "stock": 10,
+    "category": "Almacén",
+    "image": "galletitaspindy.png",
+    "description": "Galletitas de agua Pindy x3"
+  },
+  {
+    "id": 1771361953142,
+    "name": "Aceite Mezcla 900ML",
+    "price": "2500.00",
+    "stock": 30,
+    "category": "Almacén",
+    "image": "aceite-mezcla-siglo-del-oro.webp",
+    "description": "Aceite Mezcla Siglo de Oro 900ML"
+  }
+]

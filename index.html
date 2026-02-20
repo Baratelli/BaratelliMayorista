@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baratelli Mayorista</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand:     #1B4FD8;
+            --brand-d:   #1340B0;
+            --brand-l:   #EEF3FE;
+            --accent:    #F59E0B;
+            --accent-l:  #FFFBEB;
+            --green:     #059669;
+            --green-l:   #ECFDF5;
+            --red:       #DC2626;
+            --red-l:     #FEF2F2;
+            --bg:        #F8FAFC;
+            --surface:   #FFFFFF;
+            --border:    #E2E8F0;
+            --border-d:  #CBD5E1;
+            --text:      #0F172A;
+            --text-2:    #475569;
+            --text-3:    #94A3B8;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: var(--brand);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 200;
+            box-shadow: 0 2px 12px rgba(27,79,216,0.25);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+        .logo span { color: var(--accent); }
+        .header-meta { color: rgba(255,255,255,0.65); font-size: 0.8rem; margin-top: 2px; }
+        .cart-btn {
+            background: #fff;
+            color: var(--brand);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .cart-btn:hover { background: var(--brand-l); }
+        .cart-badge {
+            background: var(--accent);
+            color: #fff;
+            border-radius: 100px;
+            min-width: 22px;
+            height: 22px;
+            padding: 0 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        /* ── PROMO BAR ── */
+        .promo-bar {
+            background: var(--accent-l);
+            border-bottom: 1px solid #FDE68A;
+            padding: 10px 24px;
+            text-align: center;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #92400E;
+        }
+        .promo-bar span { color: var(--accent); }
+
+        /* ── FILTROS ── */
+        .filters-wrap {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 24px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .filters-wrap::-webkit-scrollbar { height: 3px; }
+        .filters-wrap::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 3px; }
+        .filter-btn {
+            flex-shrink: 0;
+            padding: 7px 16px;
+            border-radius: 100px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-2);
+            font-family: inherit;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .filter-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-l); }
+        .filter-btn.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+        /* ── SEARCH + CONTAINER ── */
+        .page-wrap { max-width: 1400px; margin: 0 auto; padding: 24px; }
+        .search-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-3);
+            pointer-events: none;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 14px 12px 42px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            background: var(--surface);
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(27,79,216,0.1);
+        }
+        .search-input::placeholder { color: var(--text-3); }
+        .results-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-3);
+            white-space: nowrap;
+        }
+
+        /* ── GRID ── */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        /* ── CARD ── */
+        .product-card {
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+        }
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 28px rgba(0,0,0,0.09);
+            border-color: var(--brand);
+        }
+        .product-card.sin-stock { opacity: 0.55; }
+
+        .card-img {
+            height: 185px;
+            background: #F1F5F9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-img img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            padding: 14px;
+        }
+        .card-img .no-img { font-size: 3.5rem; opacity: 0.25; }
+
+        .stock-chip {
+            position: absolute;
+            top: 10px; right: 10px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .chip-ok  { background: var(--green-l); color: var(--green); border: 1px solid #A7F3D0; }
+        .chip-low { background: var(--accent-l); color: #B45309; border: 1px solid #FDE68A; }
+        .chip-out { background: var(--red-l); color: var(--red); border: 1px solid #FECACA; }
+
+        .bulk-ribbon {
+            position: absolute;
+            top: 10px; left: 0;
+            background: var(--brand);
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 4px 10px 4px 10px;
+            border-radius: 0 100px 100px 0;
+            letter-spacing: 0.3px;
+        }
+
+        .card-body {
+            padding: 16px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .card-cat {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--brand);
+        }
+        .card-name {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.35;
+        }
+        .card-desc {
+            font-size: 0.8rem;
+            color: var(--text-3);
+            line-height: 1.4;
+        }
+        .card-prices { margin-top: auto; padding-top: 12px; }
+        .price-main {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.5px;
+        }
+        .price-bulk {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--green-l);
+            border: 1px solid #A7F3D0;
+            color: var(--green);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin-top: 6px;
+        }
+
+        .card-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-control {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--bg);
+        }
+        .qty-btn {
+            width: 32px; height: 36px;
+            background: transparent;
+            border: none;
+            color: var(--text-2);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.12s;
+        }
+        .qty-btn:hover { background: var(--brand-l); color: var(--brand); }
+        .qty-input {
+            width: 38px;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            text-align: center;
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 700;
+        }
+        .qty-input:focus { outline: none; }
+        .add-btn {
+            flex: 1;
+            background: var(--brand);
+            border: none;
+            color: #fff;
+            height: 36px;
+            padding: 0 12px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.83rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+        .add-btn:hover { background: var(--brand-d); }
+        .add-btn:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
+        .add-btn.added { background: var(--green); }
+
+        /* ── EMPTY / LOADING ── */
+        .state-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-3);
+        }
+        .state-box .icon { font-size: 3rem; margin-bottom: 14px; }
+        .spinner {
+            width: 34px; height: 34px;
+            border: 3px solid var(--border);
+            border-top-color: var(--brand);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── CART ── */
+        .overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(15,23,42,0.45);
+            z-index: 300;
+            backdrop-filter: blur(3px);
+        }
+        .overlay.open { display: block; }
+        .cart-panel {
+            position: fixed;
+            top: 0; right: -100%;
+            width: 100%; max-width: 460px;
+            height: 100vh;
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+        }
+        .cart-panel.open { right: 0; }
+        .cart-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-header h3 { font-size: 1.15rem; font-weight: 800; }
+        .close-btn {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: transparent;
+            color: var(--text-2);
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s;
+        }
+        .close-btn:hover { border-color: var(--red); color: var(--red); }
+        .cart-items { flex: 1; overflow-y: auto; padding: 16px 24px; }
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .cart-item-img {
+            width: 52px; height: 52px;
+            background: #F1F5F9;
+            border-radius: 8px;
+            flex-shrink: 0;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+        }
+        .cart-item-img img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+        .cart-item-info { flex: 1; min-width: 0; }
+        .cart-item-name { font-size: 0.88rem; font-weight: 700; line-height: 1.25; }
+        .cart-item-meta { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+        .cart-item-bulk { font-size: 0.75rem; color: var(--green); font-weight: 700; margin-top: 2px; }
+        .cart-item-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .cart-item-total { font-weight: 800; font-size: 0.95rem; }
+        .cart-remove {
+            background: transparent; border: none;
+            color: var(--text-3); cursor: pointer; font-size: 0.85rem;
+            padding: 2px; transition: color 0.15s;
+        }
+        .cart-remove:hover { color: var(--red); }
+        .cart-empty { text-align: center; padding: 60px 20px; color: var(--text-3); }
+        .cart-empty .icon { font-size: 3rem; margin-bottom: 12px; }
+        .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); }
+        .summary-row { display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text-2); margin-bottom: 6px; }
+        .summary-row.savings { color: var(--green); font-weight: 600; }
+        .summary-row.total { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-top: 10px; padding-top: 10px; border-top: 1.5px solid var(--border); }
+        .customer-fields { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+        .cart-input {
+            padding: 11px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+        .cart-input:focus { outline: none; border-color: var(--brand); }
+        .cart-input::placeholder { color: var(--text-3); }
+        .wa-btn {
+            width: 100%;
+            margin-top: 12px;
+            background: #25D366;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 9px;
+            transition: background 0.15s;
+        }
+        .wa-btn:hover { background: #128C7E; }
+
+        /* ── TICKER ── */
+        .ticker-bar {
+            background: var(--brand-d);
+            color: rgba(255,255,255,0.92);
+            height: 36px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-track {
+            display: flex;
+            gap: 0;
+            animation: ticker 28s linear infinite;
+            white-space: nowrap;
+        }
+        .ticker-bar:hover .ticker-track { animation-play-state: paused; }
+        .ticker-item {
+            padding: 0 32px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        .ticker-item a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .ticker-item a:hover { text-decoration: underline; }
+        .ticker-sep {
+            color: rgba(255,255,255,0.25);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        @keyframes ticker {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ── MAPA ── */
+        .location-section {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+        .location-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .location-info h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .location-info h3 span { color: var(--brand); }
+        .location-info p {
+            color: var(--text-2);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .contact-list { display: flex; flex-direction: column; gap: 10px; }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .contact-icon {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        .contact-icon.blue  { background: var(--brand-l); }
+        .contact-icon.green { background: var(--green-l); }
+        .contact-icon.amber { background: var(--accent-l); }
+        .contact-item a { color: var(--brand); text-decoration: none; }
+        .contact-item a:hover { text-decoration: underline; }
+        .map-frame {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1.5px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+            height: 320px;
+        }
+        .map-frame iframe {
+            width: 100%; height: 100%;
+            border: none; display: block;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: var(--text);
+            color: rgba(255,255,255,0.5);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.78rem;
+        }
+        .footer strong { color: #fff; }
+
+        @media (max-width: 800px) {
+            .location-inner { grid-template-columns: 1fr; gap: 24px; }
+            .map-frame { height: 250px; }
+        }
+        @media (max-width: 600px) {
+            .page-wrap { padding: 16px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+            .card-img { height: 140px; }
+            .price-main { font-size: 1.3rem; }
+            .cart-panel { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar" aria-label="Información de contacto">
+    <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+    <div>
+        <div class="logo">Barat<span>elli</span></div>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">
+        🛒 Mi pedido
+        <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+</header>
+
+<!-- PROMO BAR -->
+<div class="promo-bar">
+    ✨ Comprando <span>3 o más unidades iguales</span> accedés al precio mayorista especial
+</div>
+
+<!-- FILTROS -->
+<div class="filters-wrap" id="filtersBar">
+    <button class="filter-btn active" onclick="setCategory('Todos',this)">Todos</button>
+</div>
+
+<!-- CONTENIDO -->
+<div class="page-wrap">
+    <div class="search-row">
+        <div class="search-box">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" class="search-input" id="searchInput" placeholder="Buscar productos..." oninput="renderProducts()">
+        </div>
+        <span class="results-label" id="resultsLabel"></span>
+    </div>
+    <div class="products-grid" id="productsGrid">
+        <div class="state-box"><div class="spinner"></div>Cargando catálogo...</div>
+    </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
+
+<!-- CART -->
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h3>Tu Pedido</h3>
+        <button class="close-btn" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+        <div class="cart-empty"><div class="icon">🛒</div><p>El carrito está vacío</p></div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+        <div class="summary-row"><span>Subtotal sin descuento</span><span id="subtotal"></span></div>
+        <div class="summary-row savings" id="savingsRow" style="display:none"><span>💰 Ahorro mayorista</span><span id="savings"></span></div>
+        <div class="summary-row total"><span>Total</span><span id="totalPrice"></span></div>
+        <div class="customer-fields">
+            <input class="cart-input" id="custName" placeholder="Nombre y apellido" type="text">
+            <input class="cart-input" id="custPhone" placeholder="WhatsApp (opcional, para historial)" type="tel">
+            <input class="cart-input" id="custAddress" placeholder="Dirección o zona de entrega" type="text">
+        </div>
+        <button class="wa-btn" onclick="checkout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Enviar pedido por WhatsApp
+        </button>
+    </div>
+</div>
+
+<script>
+    // ══════════════════════════════
+    //  CONFIG — editá estos valores
+    // ══════════════════════════════
+    // URL de tu backend Node.js
+    // En desarrollo: http://localhost:3001
+    // Con ngrok: https://xxxx.ngrok-free.app
+    //https://subarctic-unresplendently-idella.ngrok-free.dev/
+    const API_URL = 'https://subarctic-unresplendently-idella.ngrok-free.dev/api';
+
+    // Tu número con código de país, sin + ni espacios
+    const WHATSAPP_NUMBER = '5491150625878';
+    // ══════════════════════════════
+
+    let products = [];
+    let cart = [];
+    let currentCategory = 'Todos';
+    let pendingOrderId = null;  // ID del pedido registrado en la BD
+
+    // ── Carga de productos desde la API ──
+    async function loadProducts() {
+        try {
+            const res = await fetch(`${API_URL}/products`);
+            if (!res.ok) throw new Error();
+            products = await res.json();
+        } catch {
+            // Fallback a products.json si el backend no está disponible
+            try {
+                const res = await fetch('products.json');
+                if (!res.ok) throw new Error();
+                const raw = await res.json();
+                products = raw.map((p, i) => ({
+                    id: p.id ?? i + 1,
+                    name: p.name || '',
+                    price: parseFloat(p.price) || 0,
+                    price_bulk: parseFloat(p.price_from_3 || p.price_bulk) || null,
+                    category: p.category || 'General',
+                    description: p.description || '',
+                    image: p.image || '',
+                    stock: parseInt(p.stock) ?? 99,
+                }));
+            } catch {
+                document.getElementById('productsGrid').innerHTML =
+                    `<div class="state-box"><div class="icon">⚠️</div><p>No se pudo cargar el catálogo. Verificá que el servidor esté corriendo.</p></div>`;
+                return;
+            }
+        }
+        build();
+    }
+
+    function build() { buildFilters(); renderProducts(); }
+
+    // ── CSV parser ──
+    function parseCSV(text) {
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split(',').map(h =>
+            h.trim().toLowerCase()
+             .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e')
+             .replace(/[íìï]/g,'i').replace(/[óòö]/g,'o')
+             .replace(/[úùü]/g,'u').replace(/ñ/g,'n')
+             .replace(/[^a-z0-9_]/g,''));
+        return lines.slice(1).filter(l=>l.trim()).map((line, idx) => {
+            const vals = parseCSVLine(line);
+            const o = {};
+            headers.forEach((h,i) => o[h] = (vals[i]||'').trim());
+            return {
+                id: o.id || idx+1,
+                name: o.name || o.nombre || '',
+                price: parseFloat(o.price || o.precio) || 0,
+                price_bulk: parseFloat(o.price_bulk || o.preciomayorista) || null,
+                category: o.category || o.categoria || 'General',
+                description: o.description || o.descripcion || '',
+                image: o.image || o.imagen || '',
+                stock: parseInt(o.stock) ?? 99,
+            };
+        }).filter(p => p.name);
+    }
+    function parseCSVLine(line) {
+        const r=[]; let cur=''; let inQ=false;
+        for (const ch of line) {
+            if (ch==='"') inQ=!inQ;
+            else if (ch===',' && !inQ) { r.push(cur); cur=''; }
+            else cur+=ch;
+        }
+        r.push(cur); return r;
+    }
+
+    // ── Precio mayorista ──
+    function getBulkPrice(p) {
+        if (p.price_bulk) return parseFloat(p.price_bulk);
+        const base = parseFloat(p.price) || 0;
+        return Math.ceil((base - 100) / 100) * 100;
+    }
+
+    // ── Filtros ──
+    function buildFilters() {
+        const cats = ['Todos', ...new Set(products.map(p=>p.category).filter(Boolean))];
+        document.getElementById('filtersBar').innerHTML = cats.map((c,i) =>
+            `<button class="filter-btn${i===0?' active':''}" onclick="setCategory('${c.replace(/'/g,"\\'")}',this)">${c}</button>`
+        ).join('');
+    }
+    function setCategory(cat, btn) {
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        renderProducts();
+    }
+
+    // ── Render productos ──
+    function renderProducts() {
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+        const filtered = products.filter(p => {
+            const catOk    = currentCategory === 'Todos' || p.category === currentCategory;
+            const searchOk = !search || p.name.toLowerCase().includes(search) ||
+                (p.description||'').toLowerCase().includes(search) ||
+                (p.category||'').toLowerCase().includes(search);
+            return catOk && searchOk;
+        });
+        document.getElementById('resultsLabel').textContent =
+            `${filtered.length} producto${filtered.length!==1?'s':''}`;
+
+        const grid = document.getElementById('productsGrid');
+        if (!filtered.length) {
+            grid.innerHTML = `<div class="state-box"><div class="icon">🔍</div><p>No hay resultados para "${search}"</p></div>`;
+            return;
+        }
+        grid.innerHTML = filtered.map(p => {
+            const price = parseFloat(p.price) || 0;
+            const bulk  = getBulkPrice(p);
+            const stock = parseInt(p.stock) ?? 99;
+            const stockChip = stock===0
+                ? `<span class="stock-chip chip-out">Sin stock</span>`
+                : stock < 5
+                    ? `<span class="stock-chip chip-low">Últimas ${stock}</span>`
+                    : '';
+            return `
+            <div class="product-card${stock===0?' sin-stock':''}">
+                <div class="card-img">
+                    ${p.image
+                        ? `<img src="product-images/${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=no-img>📦</div>'">`
+                        : `<div class="no-img">📦</div>`}
+                    ${stockChip}
+                    <div class="bulk-ribbon">✨ x3 = $${bulk.toLocaleString('es-AR')}</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-cat">${esc(p.category)}</div>
+                    <div class="card-name">${esc(p.name)}</div>
+                    ${p.description ? `<div class="card-desc">${esc(p.description)}</div>` : ''}
+                    <div class="card-prices">
+                        <div class="price-main">$${price.toLocaleString('es-AR')}</div>
+                        <div class="price-bulk">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                            x3 o más: $${bulk.toLocaleString('es-AR')} c/u
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button>
+                        <input class="qty-input" id="qty-${p.id}" type="number" value="1" min="1" max="${stock||999}">
+                        <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
+                    </div>
+                    <button class="add-btn" id="addbtn-${p.id}" onclick="addToCart('${p.id}')" ${stock===0?'disabled':''}>
+                        ${stock===0?'Sin stock':'Agregar'}
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function esc(s) {
+        return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ── Cantidad ──
+    function changeQty(id, delta) {
+        const input = document.getElementById(`qty-${id}`);
+        if (!input) return;
+        const p = products.find(x=>String(x.id)===String(id));
+        const max = p ? (parseInt(p.stock)||999) : 999;
+        input.value = Math.min(max, Math.max(1, parseInt(input.value)+delta));
+    }
+
+    // ── Carrito ──
+    function addToCart(id) {
+        const p = products.find(x=>String(x.id)===String(id));
+        if (!p) return;
+        const qty = parseInt(document.getElementById(`qty-${id}`)?.value)||1;
+        const stock = parseInt(p.stock)??999;
+        const existing = cart.find(x=>String(x.id)===String(id));
+        const inCart = existing ? existing.quantity : 0;
+        if (inCart+qty > stock) {
+            const avail = stock-inCart;
+            alert(avail>0 ? `Solo podés agregar ${avail} más (stock: ${stock})` : 'No hay más stock disponible.');
+            return;
+        }
+        if (existing) existing.quantity += qty;
+        else cart.push({...p, quantity: qty});
+        updateBadge();
+        const btn = document.getElementById(`addbtn-${id}`);
+        if (btn) {
+            btn.textContent='✓ Agregado'; btn.classList.add('added');
+            setTimeout(()=>{btn.textContent='Agregar';btn.classList.remove('added');},1500);
+        }
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(x=>String(x.id)!==String(id));
+        updateBadge(); renderCart();
+    }
+
+    function updateBadge() {
+        document.getElementById('cartBadge').textContent = cart.reduce((s,i)=>s+i.quantity,0);
+    }
+
+    function renderCart() {
+        const container = document.getElementById('cartItems');
+        const footer    = document.getElementById('cartFooter');
+        if (!cart.length) {
+            container.innerHTML = `<div class="cart-empty"><div class="icon">🛒</div><p>El carrito está vacío</p></div>`;
+            footer.style.display='none'; return;
+        }
+        let subtotal=0, total=0;
+        container.innerHTML = cart.map(item => {
+            const p1   = parseFloat(item.price)||0;
+            const bulk = getBulkPrice(item);
+            const isBulk = item.quantity>=3;
+            const unit = isBulk ? bulk : p1;
+            const line = unit*item.quantity;
+            subtotal += p1*item.quantity;
+            total    += line;
+            return `
+            <div class="cart-item">
+                <div class="cart-item-img">
+                    ${item.image ? `<img src="product-images/${esc(item.image)}" alt="">` : '📦'}
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">${esc(item.name)}</div>
+                    <div class="cart-item-meta">$${unit.toLocaleString('es-AR')} × ${item.quantity}</div>
+                    ${isBulk?`<div class="cart-item-bulk">✨ Precio mayorista aplicado</div>`:''}
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-total">$${line.toLocaleString('es-AR')}</span>
+                    <button class="cart-remove" onclick="removeFromCart('${item.id}')">✕ quitar</button>
+                </div>
+            </div>`;
+        }).join('');
+        document.getElementById('subtotal').textContent   = `$${subtotal.toLocaleString('es-AR')}`;
+        document.getElementById('totalPrice').textContent = `$${total.toLocaleString('es-AR')}`;
+        const sav = subtotal-total;
+        document.getElementById('savingsRow').style.display = sav>0?'flex':'none';
+        document.getElementById('savings').textContent = `-$${sav.toLocaleString('es-AR')}`;
+        footer.style.display='block';
+    }
+
+    function toggleCart() {
+        const open = document.getElementById('cartPanel').classList.toggle('open');
+        document.getElementById('overlay').classList.toggle('open', open);
+        if (open) renderCart();
+    }
+
+    // ── Checkout: registra en BD y abre WhatsApp ──
+    async function checkout() {
+        const name    = document.getElementById('custName').value.trim();
+        const phone   = document.getElementById('custPhone').value.trim();
+        const address = document.getElementById('custAddress').value.trim();
+        if (!name || !address) { alert('Completá tu nombre y dirección antes de enviar el pedido.'); return; }
+
+        const btn = document.querySelector('.wa-btn');
+        btn.disabled = true;
+        btn.textContent = 'Registrando pedido...';
+
+        // Armar items para la API
+        const items = cart.map(item => ({
+            product_id: item.id,
+            quantity:   item.quantity,
+        }));
+
+        let orderId = null;
+        try {
+            const res = await fetch(`${API_URL}/orders`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    customer_name:    name,
+                    customer_phone:   phone || null,
+                    customer_address: address,
+                    items,
+                }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Error al registrar pedido');
+            orderId = data.order_id;
+        } catch (err) {
+            console.warn('Backend no disponible, continuando sin registrar:', err.message);
+        }
+
+        // Armar mensaje WhatsApp
+        let total = 0;
+        let msg = `🛒 *PEDIDO BARATELLI*\n`;
+        if (orderId) msg += `📋 *N° Pedido:* #${orderId}\n`;
+        msg += `👤 *Cliente:* ${name}\n`;
+        if (phone) msg += `📱 *Tel:* ${phone}\n`;
+        msg += `📍 *Dirección:* ${address}\n─────────────────\n`;
+
+        cart.forEach(item => {
+            const p1   = parseFloat(item.price) || 0;
+            const unit = item.quantity >= 3 ? getBulkPrice(item) : p1;
+            const line = unit * item.quantity;
+            total += line;
+            msg += `• ${item.name} ×${item.quantity}${item.quantity>=3?' _(mayorista)_':''} = $${line.toLocaleString('es-AR')}\n`;
+        });
+        msg += `─────────────────\n💰 *TOTAL: $${total.toLocaleString('es-AR')}*`;
+        if (orderId) msg += `\n\n_Al confirmar este pedido el stock se actualiza automáticamente._`;
+
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Enviar pedido por WhatsApp`;
+
+        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    loadProducts();
+
+    // ── Ticker animado ──
+    const TICKER_ITEMS = [
+        { icon: '📍', text: 'Carcavallo 1993, Buenos Aires' },
+        { icon: '📞', text: 'Llamanos: <a href="tel:1150625878">11 5062-5878</a>' },
+        { icon: '💬', text: 'WhatsApp: <a href="https://wa.me/5491150625878" target="_blank">11 5062-5878</a>' },
+        { icon: '🕐', text: 'Lun a Sáb · 9:00 – 18:00 hs' },
+        { icon: '🚚', text: 'Envíos y retiro en el local' },
+        { icon: '⭐', text: 'Precios mayoristas todo el año' },
+        { icon: '🏷️', text: '3 o más unidades = precio especial' },
+    ];
+    (function buildTicker() {
+        const track = document.getElementById('tickerTrack');
+        [0, 1].forEach(() => {
+            TICKER_ITEMS.forEach((item, i) => {
+                const span = document.createElement('span');
+                span.className = 'ticker-item';
+                span.innerHTML = item.icon + ' ' + item.text;
+                track.appendChild(span);
+                if (i < TICKER_ITEMS.length - 1) {
+                    const sep = document.createElement('span');
+                    sep.className = 'ticker-sep';
+                    sep.textContent = ' · ';
+                    track.appendChild(sep);
+                }
+            });
+        });
+    })();
+</script>
+
+<!-- UBICACIÓN -->
+<section class="location-section">
+    <div class="location-inner">
+        <div class="location-info">
+            <h3>Visitanos en <span>nuestro local</span></h3>
+            <p>Atención personalizada de lunes a sábado. Podés pasar a retirar tu pedido o coordinar envío a domicilio.</p>
+            <div class="contact-list">
+                <div class="contact-item">
+                    <div class="contact-icon amber">📍</div>
+                    <span>Carcavallo 1993, Buenos Aires</span>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon blue">📞</div>
+                    <a href="tel:1150625878">11 5062-5878</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon green">💬</div>
+                    <a href="https://wa.me/5491150625878" target="_blank">WhatsApp directo</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon amber">🕐</div>
+                    <span>Lun a Sáb · 9:00 a 18:00 hs</span>
+                </div>
+            </div>
+        </div>
+        <div class="map-frame">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.016772395347!2d-58.42779092346191!3d-34.60370!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccb4a7b5ee5e5%3A0x0!2sCarcavallo+1993%2C+C1407+Buenos+Aires!5e0!3m2!1ses!2sar!4v1700000000000!5m2!1ses!2sar"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Ubicación Baratelli Mayorista">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <strong>Baratelli Mayorista</strong> · Carcavallo 1993, Buenos Aires · 11 5062-5878
+</footer>
+
+</body>
+</html>
