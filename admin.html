@@ -407,14 +407,21 @@ let authToken = null;
     }
 
     // ── DASHBOARD ──
+    // ── DASHBOARD ──
     async function loadStats() {
         try {
             const res = await fetch(`${API_URL}/stats`, { headers: authHeaders() });
+            
+            // Si el servidor responde, aunque sea un error 404, significa que hay conexión.
+            // Solo si la red falla completamente saltará al catch.
+            if (!res.ok && res.status !== 404) throw new Error();
+
             const s = await res.json();
             const growth = s.revenue.growth_pct;
             const trendHtml = growth !== null
                 ? `<span class="stat-trend ${growth>=0?'up':'down'}">${growth>=0?'+':''}${growth}% vs mes ant.</span>`
                 : '';
+            
             document.getElementById('statsBar').innerHTML = `
                 <div class="stat-card">
                     <div class="stat-top"><div class="stat-icon blue">📦</div></div>
@@ -442,8 +449,22 @@ let authToken = null;
                     <div class="stat-lbl">Ventas este mes</div>
                 </div>`;
         } catch(e) {
+            // Intentamos una segunda prueba a la RAÍZ (sin /api) para confirmar si el servidor existe
+            try {
+                const rootRes = await fetch(API_URL.replace('/api', ''));
+                if (rootRes.ok) {
+                    // Si la raíz responde pero /api falla, es un error de rutas, pero el server está VIVO.
+                    // Recargamos los productos para forzar la entrada.
+                    loadProducts(); 
+                    return;
+                }
+            } catch(innerE) {}
+
             document.getElementById('statsBar').innerHTML =
-                `<div style="grid-column:1/-1;padding:20px;color:var(--red);text-align:center">⚠️ No se puede conectar al backend. Verificá que el servidor esté corriendo en ${API_URL}</div>`;
+                `<div style="grid-column:1/-1;padding:20px;color:var(--red);text-align:center">
+                    ⚠️ Error de conexión con el servidor.<br>
+                    <small>Verificá que ngrok esté activo y hayas hecho clic en "Visit Site".</small>
+                </div>`;
         }
     }
 
