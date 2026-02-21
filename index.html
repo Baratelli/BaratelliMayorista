@@ -678,7 +678,7 @@
     // ── Carga de productos desde la API ──
     async function loadProducts() {
         try {
-            const res = await fetch(`${API_URL}/products`);
+            const res = await fetch(`${API_URL}/products`, { headers: { 'ngrok-skip-browser-warning': 'true' } });
             if (!res.ok) throw new Error();
             products = await res.json();
         } catch {
@@ -938,7 +938,7 @@
         try {
             const res = await fetch(`${API_URL}/orders`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
                 body: JSON.stringify({
                     customer_name:    name,
                     customer_phone:   phone || null,
@@ -950,7 +950,11 @@
             if (!res.ok) throw new Error(data.error || 'Error al registrar pedido');
             orderId = data.order_id;
         } catch (err) {
-            console.warn('Backend no disponible, continuando sin registrar:', err.message);
+            console.warn('Error al registrar pedido:', err.message);
+            // Mostrar aviso pero dejar continuar con WhatsApp igual
+            if (err.message && err.message !== 'Failed to fetch') {
+                alert(`⚠️ Atención: ${err.message}`);
+            }
         }
 
         // Armar mensaje WhatsApp
