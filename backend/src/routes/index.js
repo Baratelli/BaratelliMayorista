@@ -2,7 +2,7 @@ import express from 'express';
 import { login }                           from '../controllers/auth.controller.js';
 import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, getCategories }
     from '../controllers/products.controller.js';
-import { createOrder, confirmOrder, getOrders, getOrder, updateOrderStatus }
+import { createOrder, confirmOrder, getOrders, getOrder, updateOrderStatus, deleteOrder }
     from '../controllers/orders.controller.js';
 import { getCustomers, getCustomer, updateCustomer, getMonthlyRanking, getStats }
     from '../controllers/customers.controller.js';
@@ -29,6 +29,7 @@ router.post('/orders/:id/confirm', requireAuth, confirmOrder);
 router.put ('/orders/:id/status',  requireAuth, updateOrderStatus);
 router.get ('/orders',             requireAuth, getOrders);
 router.get ('/orders/:id',         requireAuth, getOrder);
+router.delete('/orders/:id',       requireAuth, deleteOrder);
 
 // ── Clientes y Ranking ────────────────────────────────
 router.get('/customers',           requireAuth, getCustomers);

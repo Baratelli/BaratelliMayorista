@@ -109,8 +109,8 @@
         .td-img img{width:100%;height:100%;object-fit:contain;padding:3px;}
 
         /* PEDIDOS TABLE */
-        .thead-orders{grid-template-columns:70px 1fr 140px 110px 110px 110px 110px;}
-        .trow-orders {grid-template-columns:70px 1fr 140px 110px 110px 110px 110px;}
+        .thead-orders{grid-template-columns:60px 1fr 130px 100px 100px 1fr;}
+        .trow-orders {grid-template-columns:60px 1fr 130px 100px 100px 1fr;}
 
         /* CLIENTES TABLE */
         .thead-customers{grid-template-columns:60px 1fr 130px 100px 110px 110px;}
@@ -655,22 +655,48 @@ let authToken = null;
 
         body.innerHTML = filtered.map(o => {
             const fecha = new Date(o.created_at).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
-            const confirmBtn = o.status==='pendiente'
-                ? `<button class="btn btn-green btn-xs" onclick="confirmOrder(${o.id})">✓ Confirmar</button>`
-                : '';
+
+            // Botones según estado
+            let actionBtns = '';
+            if (o.status === 'pendiente') {
+                actionBtns = `
+                    <button class="btn btn-green btn-xs" onclick="confirmOrder(${o.id})" title="Confirmar y bajar stock">✓ Confirmar</button>
+                    <button class="btn btn-xs" style="background:var(--red-l);color:var(--red);border:1px solid #FECACA" onclick="deleteOrder(${o.id})" title="Borrar pedido">🗑</button>`;
+            } else if (o.status === 'confirmado') {
+                actionBtns = `
+                    <button class="btn btn-xs" style="background:var(--brand-l);color:var(--brand);border:1px solid #C7D7FC" onclick="changeStatus(${o.id},'entregado')" title="Marcar entregado">📦 Entregado</button>
+                    <button class="btn btn-xs" style="background:var(--red-l);color:var(--red);border:1px solid #FECACA" onclick="deleteOrder(${o.id})" title="Borrar pedido">🗑</button>`;
+            } else if (o.status === 'entregado') {
+                actionBtns = `
+                    <button class="btn btn-xs" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text-3)" onclick="deleteOrder(${o.id})" title="Borrar pedido">🗑 Borrar</button>`;
+            } else if (o.status === 'cancelado') {
+                actionBtns = `
+                    <button class="btn btn-xs" style="background:var(--bg);border:1.5px solid var(--border);color:var(--text-3)" onclick="deleteOrder(${o.id})" title="Borrar pedido">🗑 Borrar</button>`;
+            }
+
             return `<div class="trow trow-orders">
                 <div class="td td-bold">#${o.id}</div>
                 <div class="td"><div class="td-bold">${esc(o.customer_name)}</div><div class="td-muted">${esc(o.customer_phone||'')}</div></div>
                 <div class="td td-muted">${fecha}</div>
                 <div class="td td-bold">$${parseFloat(o.total).toLocaleString('es-AR')}</div>
                 <div class="td"><span class="pill ${statusMap[o.status]||''}">${statusLabel[o.status]||o.status}</span></div>
-                <div class="td row-actions">
-                    ${confirmBtn}
-                    <button class="btn btn-sm" style="background:var(--bg);border:1.5px solid var(--border)" onclick="viewOrder(${o.id})">👁 Ver</button>
+                <div class="td row-actions" style="flex-wrap:wrap;gap:4px">
+                    <button class="btn btn-xs" style="background:var(--bg);border:1.5px solid var(--border)" onclick="viewOrder(${o.id})">👁 Ver</button>
+                    ${actionBtns}
                 </div>
-                <div class="td"></div>
             </div>`;
         }).join('');
+    }
+
+    async function deleteOrder(id) {
+        const o = allOrders.find(x=>x.id===id);
+        if (!confirm(`¿Borrar el pedido #${id} de ${o?.customer_name}? Esta acción no se puede deshacer.`)) return;
+        try {
+            const res = await fetch(`${API_URL}/orders/${id}`, { method:'DELETE', headers:authHeaders() });
+            if (!res.ok) throw new Error((await res.json()).error);
+            showToast(`Pedido #${id} eliminado`,'ok');
+            loadOrders(); loadStats();
+        } catch(e) { showToast(e.message,'error'); }
     }
 
     async function confirmOrder(id) {

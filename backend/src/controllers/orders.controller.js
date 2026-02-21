@@ -227,6 +227,20 @@ export const getOrders = async (req, res) => {
     }
 };
 
+// DELETE /api/orders/:id — borrar un pedido
+export const deleteOrder = async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT id FROM orders WHERE id=$1', [req.params.id]);
+        if (!rows[0]) return res.status(404).json({ error: 'Pedido no encontrado' });
+        await pool.query('DELETE FROM order_items WHERE order_id=$1', [req.params.id]);
+        await pool.query('DELETE FROM orders WHERE id=$1', [req.params.id]);
+        res.json({ message: 'Pedido eliminado' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al eliminar pedido' });
+    }
+};
+
 // GET /api/orders/:id — detalle de un pedido
 export const getOrder = async (req, res) => {
     try {
