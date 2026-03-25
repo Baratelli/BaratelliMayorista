@@ -278,14 +278,13 @@
         }
 
         .card-footer {
-            padding: 12px 16px;
+            padding: 14px 16px;
             border-top: 1px solid var(--border);
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
         }
-        .qty-control { width: 100%; justify-content: space-between; }
-        .add-btn { width: 100%; }
         .qty-control {
             display: flex;
             align-items: center;
@@ -293,15 +292,16 @@
             border-radius: 10px;
             overflow: hidden;
             background: var(--bg);
-            flex-shrink: 0; /* no se achica nunca */
+            flex-shrink: 0;
+            height: 52px;
         }
         .qty-btn {
-            width: 36px; height: 44px;
-            min-width: 36px;
+            width: 40px; height: 52px;
+            min-width: 40px;
             background: transparent;
             border: none;
             color: var(--text-2);
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.12s;
@@ -310,8 +310,8 @@
         .qty-btn:hover { background: var(--brand-l); color: var(--brand); }
         .qty-btn:active { background: var(--brand); color: #fff; }
         .qty-input {
-            width: 32px;
-            min-width: 32px;
+            width: 34px;
+            min-width: 34px;
             background: transparent;
             border: none;
             color: var(--text);
@@ -323,22 +323,34 @@
         .qty-input:focus { outline: none; }
         .add-btn {
             flex: 1;
-            min-width: 0;      /* permite que flex lo achique si es necesario */
+            min-width: 0;
             background: var(--brand);
             border: none;
             color: #fff;
             height: 52px;
-            padding: 0 8px;
-            border-radius: 8px;
+            padding: 0 10px;
+            border-radius: 10px;
             font-family: inherit;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.15s;
+            transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            letter-spacing: 0.2px;
+            box-shadow: 0 3px 10px rgba(27,79,216,0.25);
         }
-        .add-btn:hover { background: var(--brand-d); }
-        .add-btn:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; }
-        .add-btn.added { background: var(--green); }
+        .add-btn:hover {
+            background: var(--brand-d);
+            box-shadow: 0 5px 16px rgba(27,79,216,0.35);
+            transform: translateY(-1px);
+        }
+        .add-btn:active { transform: translateY(0); box-shadow: none; }
+        .add-btn:disabled { background: var(--border); color: var(--text-3); cursor: not-allowed; box-shadow: none; transform: none; }
+        .add-btn.added { background: var(--green); box-shadow: 0 3px 10px rgba(5,150,105,0.3); }
+        .add-btn svg { flex-shrink: 0; }
 
         /* ── EMPTY / LOADING ── */
         .state-box {
@@ -819,7 +831,9 @@
                         <button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button>
                     </div>
                     <button class="add-btn" id="addbtn-${p.id}" onclick="addToCart('${p.id}')" ${stock===0?'disabled':''}>
-                        ${stock===0?'Sin stock':'Agregar'}
+                        ${stock===0
+                            ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg> Sin stock`
+                            : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Agregar`}
                     </button>
                 </div>
             </div>`;
@@ -857,8 +871,8 @@
         updateBadge();
         const btn = document.getElementById(`addbtn-${id}`);
         if (btn) {
-            btn.textContent='✓ Agregado'; btn.classList.add('added');
-            setTimeout(()=>{btn.textContent='Agregar';btn.classList.remove('added');},1500);
+            btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> ¡Agregado!'; btn.classList.add('added');
+            setTimeout(()=>{btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> Agregar';btn.classList.remove('added');},1500);
         }
     }
 
